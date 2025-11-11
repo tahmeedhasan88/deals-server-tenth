@@ -37,10 +37,24 @@ async function run(){
      const database = client.db('deals_db');
      const productsCollection = database.collection('product')
 
+     const ordersCollection = database.collection('orders');
+
+
+
+
+
 
      app.get('/products', async(req,res) => {
 
-        const cursor = productsCollection.find();
+      console.log(req.query)
+      const email = req.query.email;
+      const query = {}
+      if(email){
+
+         query.email = email 
+      }
+
+        const cursor = productsCollection.find(query);
         const result = await cursor.toArray();
         res.send(result)
 
@@ -64,6 +78,14 @@ async function run(){
      })
 
 
+     app.post('/orders', async(req, res) => {
+      const newOrders = req.body;
+      const result = await productsCollection.insertOne(newOrders)
+      
+      res.send(result)
+     })
+
+
      app.delete('/products/:id', async(req, res) => {
 
         const id = req.params.id;
@@ -72,6 +94,23 @@ async function run(){
         res.send(result)
 
 
+     })
+
+     app.get('/orders', async(req, res) =>{
+
+      const email = req.query.email
+      const query = {};
+
+      if(email){
+
+         query.email = email;
+      }
+
+      
+
+      const cursor = ordersCollection.find(query)
+      const result = await  cursor.toArray()
+      res.send(result)
      })
 
 
