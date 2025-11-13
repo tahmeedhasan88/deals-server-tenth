@@ -83,6 +83,16 @@ async function run(){
         res.send(result)
      })
 
+
+     app.get('/orders', async(req,res)=>{
+        const cursor = ordersCollection.find();
+        const result = await cursor.toArray();
+        res.send(result)
+
+     })
+
+
+
      app.post('/products', async(req, res) => {
          
         const newProducts = req.body;
@@ -94,7 +104,7 @@ async function run(){
 
      app.post('/orders', async(req, res) => {
       const newOrders = req.body;
-      const result = await productsCollection.insertOne(newOrders)
+      const result = await ordersCollection.insertOne(newOrders)
       
       res.send(result)
      })
