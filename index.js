@@ -1,6 +1,6 @@
 const express = require('express');
 const cors = require('cors');
-const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId, Db } = require('mongodb');
 const app = express()
 const port = process.env.PORT || 3000;
 
@@ -36,11 +36,17 @@ async function run(){
 
      const database = client.db('deals_db');
      const productsCollection = database.collection('product')
-
      const ordersCollection = database.collection('orders');
+     const userCollection = database.collection('users');
 
 
+     app.post('/users', async(req,res)=>{
 
+      const newUser = req.body;
+      const result = await userCollection.insertOne(newUser)
+      res.send(result);
+
+     })
 
 
 
@@ -57,6 +63,14 @@ async function run(){
         const cursor = productsCollection.find(query);
         const result = await cursor.toArray();
         res.send(result)
+
+     })
+
+     app.get('/recent-listings', async(req,res)=>{
+
+          const cursor = productsCollection.find().sort({date: -1}).limit(6);
+          const result = await cursor.toArray();
+          res.send(result)
 
      })
 
