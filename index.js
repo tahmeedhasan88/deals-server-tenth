@@ -83,17 +83,100 @@ async function run(){
         res.send(result)
      })
 
+//This portion is for my order page
+// Get Orders 
+app.get('/orders', async (req, res) => {
+  try {
+    const email = req.query.email;
+    const query = email ? { email } : {};  
 
-     app.get('/orders', async(req,res)=>{
-        const cursor = ordersCollection.find();
-        const result = await cursor.toArray();
-        res.send(result)
+    const result = await ordersCollection.find(query).toArray();
+    res.send(result);
 
-     })
+  } catch (error) {
+    console.error("Error fetching orders:", error);
+    res.status(500).send({ message: "Failed to fetch orders", error });
+  }
+});
+
+
+// Delete an Order
+app.delete('/orders/:id', async (req, res) => {
+  try {
+    const id = req.params.id;
+
+    if (!ObjectId.isValid(id)) {
+      return res.status(400).send({ message: "Invalid order ID" });
+    }
+
+    const result = await ordersCollection.deleteOne({ _id: new ObjectId(id) });
+
+    if (result.deletedCount === 0) {
+      return res.status(404).send({ message: "Order not found" });
+    }
+
+    res.send({ message: "Order deleted successfully", result });
+
+  } catch (error) {
+    console.error("Error deleting order:", error);
+    res.status(500).send({ message: "Failed to delete order", error });
+  }
+});
+//---------------------------------
+
+
+//This portion is for my listing
+
+app.get('/products', async (req, res) => {
+  try {
+    const email = req.query.email;
+    const query = email ? { email } : {};  // Clean query handling
+
+    const result = await productsCollection.find(query).toArray();
+    res.send(result);
+
+  } catch (error) {
+    console.error("Error fetching orders:", error);
+    res.status(500).send({ message: "Failed to fetch orders", error });
+  }
+});
 
 
 
-     app.post('/products', async(req, res) => {
+// DELETE /orders/:id
+app.delete('/orders/:id', async (req, res) => {
+  try {
+    const id = req.params.id;
+
+    if (!ObjectId.isValid(id)) {
+      return res.status(400).send({ message: "Invalid order ID" });
+    }
+
+    const result = await ordersCollection.deleteOne({ _id: new ObjectId(id) });
+
+    if (result.deletedCount === 0) {
+      return res.status(404).send({ message: "Order not found" });
+    }
+
+    res.send({ message: "Order deleted successfully", deletedCount: result.deletedCount });
+
+  } catch (error) {
+    console.error("Error deleting order:", error);
+    res.status(500).send({ message: "Failed to delete order", error });
+  }
+});
+
+
+
+
+//---------------------------------------
+
+
+
+
+
+
+ app.post('/products', async(req, res) => {
          
         const newProducts = req.body;
         const result = await productsCollection.insertOne(newProducts);
@@ -120,22 +203,6 @@ async function run(){
 
      })
 
-     app.get('/orders', async(req, res) =>{
-
-      const email = req.query.email
-      const query = {};
-
-      if(email){
-
-         query.email = email;
-      }
-
-      
-
-      const cursor = ordersCollection.find(query)
-      const result = await  cursor.toArray()
-      res.send(result)
-     })
 
 
      app.patch('/products/:id', async(req, res) => {
