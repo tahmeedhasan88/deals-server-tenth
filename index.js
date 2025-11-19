@@ -7,7 +7,10 @@ const port = process.env.PORT || 3000;
 
 
 //middleware
-app.use(cors());
+app.use(cors({
+  origin: ["http://localhost:5173", "https://deals-server-tenth.vercel.app"],
+  credentials: true
+}));
 app.use(express.json())
 
 
@@ -33,7 +36,7 @@ app.get('/', (req, res) => {
 async function run(){
   try{
 
-     await client.connect();
+     
 
      const database = client.db('deals_db');
      const productsCollection = database.collection('product')
@@ -226,7 +229,7 @@ app.delete('/orders/:id', async (req, res) => {
 
 
 
-    await client.db("admin").command({ ping: 1 });
+    
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
 
   }finally{
