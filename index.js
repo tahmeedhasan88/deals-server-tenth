@@ -8,14 +8,17 @@ const port = process.env.PORT || 3000;
 
 //middleware
 app.use(cors({
-  origin: ["http://localhost:5173", "https://deals-server-tenth.web.app", "https://deals-server-tenth.vercel.app"],
+  origin: [
+    "http://localhost:5173",
+    "https://deals-client-tenth.vercel.app",
+    "https://deals-server-tenth.web.app",
+    "https://deals-server-tenth.vercel.app"
+  ],
   credentials: true
 }));
 
 app.use(express.json());
 
-
-const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.ro9lg2o.mongodb.net/?appName=Cluster0` ;
 
 
 
